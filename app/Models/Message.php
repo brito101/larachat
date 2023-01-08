@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Message extends Model
 {
@@ -22,5 +23,16 @@ class Message extends Model
     public function receiver()
     {
         return $this->belongsTo(User::class, 'receiver_id');
+    }
+
+    public function conversationsWithUser(int $id)
+    {
+        return $this->where(function ($query) use ($id) {
+            $query->where('receiver_id', Auth::user()->id);
+            $query->where('sender_id', $id);
+        })->orWhere(function ($query) use ($id) {
+            $query->where('sender_id', Auth::user()->id);
+            $query->where('receiver_id', $id);
+        })->with(['sender', 'receiver'])->get();
     }
 }

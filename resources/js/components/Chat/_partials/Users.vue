@@ -4,12 +4,13 @@
             <h3
                 class="text-xl font-semibold tracking-wide mt-5 hidden lg:block"
             >
-                Conversas
+                Usuários
             </h3>
             <div class="relative my-5 text-gray-600">
                 <input
                     type="search"
                     name="serch"
+                    v-model="filter"
                     placeholder="Search"
                     class="w-full bg-gray-100 h-10 px-5 pr-10 rounded-full text-sm focus:outline-none focus:shadow-lg focus:bg-white hover:shadow-md"
                 />
@@ -37,10 +38,16 @@
         </div>
         <!-- users -->
         <ul class="flex flex-col chat-list">
-            <div v-for="(user, index) in allUsers" :key="index">
+            <div v-for="(user, index) in users" :key="index">
                 <li
-                    class="bg-white hover:bg-gray-100 border-b p-4 cursor-pointer"
-                    :class="{ 'is-active': activeChat === index }"
+                    @click.prevent="openChatWithUser(user)"
+                    :class="[
+                        'hover:bg-gray-100',
+                        'border-b',
+                        'p-4',
+                        'cursor-pointer',
+                        activeChat === user.id ? 'is-active' : 'bg-white',
+                    ]"
                 >
                     <div class="flex items-center relative">
                         <div class="relative">
@@ -93,7 +100,7 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from "vuex";
+import { mapActions, mapState, mapGetters, mapMutations } from "vuex";
 
 export default {
     mounted() {
@@ -106,15 +113,35 @@ export default {
         ...mapGetters({
             allUsers: "sortedUsers",
         }),
+
+        users() {
+            return this.allUsers.filter((user) => {
+                if (this.filter === "") return user;
+                return (
+                    user.name.includes(this.filter) ||
+                    user.email === this.filter
+                );
+            });
+        },
     },
     data() {
         return {
             selected: "inbox",
             activeChat: 0,
+            filter: "",
         };
     },
     methods: {
-        ...mapActions(["getUsers"]),
+        ...mapMutations({
+            addUserChat: "ADD_USER_CONVERSATION",
+        }),
+        ...mapActions(["getUsers", "getMessagesConversation"]),
+
+        openChatWithUser(user) {
+            this.activeChat = user.id;
+            this.addUserChat(user);
+            this.getMessagesConversation();
+        },
     },
 };
 </script>

@@ -30995,7 +30995,7 @@ video {
 
 @media (min-width: 1280px) {
   .chat-sidebar {
-    grid-column: span 2 / span 2;
+    grid-column: span 3 / span 3;
   }
 }
 
@@ -31013,7 +31013,7 @@ video {
 
 @media (min-width: 1280px) {
   .chat-window {
-    grid-column: span 10 / span 10;
+    grid-column: span 9 / span 9;
   }
 }
 

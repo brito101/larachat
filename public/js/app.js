@@ -5420,7 +5420,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({});
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapState)({
+    userConversation: function userConversation(state) {
+      return state.chat.userConversation;
+    },
+    messages: function messages(state) {
+      return state.chat.messages;
+    },
+    me: function me(state) {
+      return state.me.me;
+    }
+  })), {}, {
+    disabledButton: function disabledButton() {
+      return this.message.length < 2 || this.sendingMessage;
+    }
+  })
+});
 
 /***/ }),
 
@@ -5468,16 +5492,34 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   mounted: function mounted() {
     this.getUsers();
   },
-  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)({
+  computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)({
     allUsers: "sortedUsers"
-  })),
+  })), {}, {
+    users: function users() {
+      var _this = this;
+
+      return this.allUsers.filter(function (user) {
+        if (_this.filter === "") return user;
+        return user.name.includes(_this.filter) || user.email === _this.filter;
+      });
+    }
+  }),
   data: function data() {
     return {
       selected: "inbox",
-      activeChat: 0
+      activeChat: 0,
+      filter: ""
     };
   },
-  methods: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(["getUsers"]))
+  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapMutations)({
+    addUserChat: "ADD_USER_CONVERSATION"
+  })), (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(["getUsers", "getMessagesConversation"])), {}, {
+    openChatWithUser: function openChatWithUser(user) {
+      this.activeChat = user.id;
+      this.addUserChat(user);
+      this.getMessagesConversation();
+    }
+  })
 });
 
 /***/ }),
@@ -5531,7 +5573,7 @@ var render = function render() {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("div", {
+  return _vm.userConversation != null ? _c("div", {
     staticClass: "chat-window is-active"
   }, [_c("div", {
     staticClass: "chat-window__wrapper"
@@ -5561,7 +5603,7 @@ var render = function render() {
   })])]), _vm._v(" "), _c("img", {
     staticClass: "w-10 h-10 rounded-full",
     attrs: {
-      src: "https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144",
+      src: [_vm.userConversation.photo != "" ? _vm.userConversation.photo : "images/avatar.png"],
       alt: ""
     }
   })]), _vm._v(" "), _c("div", {
@@ -5570,9 +5612,9 @@ var render = function render() {
     staticClass: "mt-1 flex items-center"
   }, [_c("span", {
     staticClass: "text-lg font-medium text-gray-700 mr-3"
-  }, [_vm._v(_vm._s("Carlos Ferreira"))])]), _vm._v(" "), _c("span", {
+  }, [_vm._v(_vm._s(_vm.userConversation.name))])]), _vm._v(" "), _c("span", {
     staticClass: "text-sm text-muted"
-  }, [_vm._v("Junior Developer")])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v(_vm._s(_vm.userConversation.email))])])]), _vm._v(" "), _c("div", {
     staticClass: "flex items-center space-x-2"
   }, [_c("button", {
     staticClass: "inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none",
@@ -5596,7 +5638,29 @@ var render = function render() {
     }
   })])])])]), _vm._v(" "), _c("div", {
     staticClass: "chat-window__messages-wrapper"
-  }, [_vm._m(0), _vm._v(" "), _c("div", {
+  }, [_c("div", {
+    ref: "messages",
+    staticClass: "chat-window__messages-inner"
+  }, [_c("div", {
+    staticClass: "chat-messages"
+  }, _vm._l(_vm.messages, function (message, index) {
+    return _c("div", {
+      key: index,
+      "class": [message.me ? "my-message" : "his-message"]
+    }, [_c("div", {
+      staticClass: "inner"
+    }, [!message.me ? _c("div", {
+      staticClass: "profile"
+    }, [_c("img", {
+      staticClass: "w-10 h-10 rounded-full",
+      attrs: {
+        src: [message.sender.photo != "" ? message.sender.photo : "images/avatar.png"],
+        alt: message.sender.name
+      }
+    })]) : _vm._e(), _vm._v(" "), _c("div", {
+      staticClass: "ballon-text"
+    }, [_c("div", [_vm._v(_vm._s(message.message))])])])]);
+  }), 0)]), _vm._v(" "), _c("div", {
     staticClass: "chat-input w-full px-4 mb-4"
   }, [_c("div", {
     staticClass: "flex flex-row items-center h-16 rounded-xl px-4 bg-white"
@@ -5617,7 +5681,7 @@ var render = function render() {
       "stroke-width": "2",
       d: "M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
     }
-  })])])]), _vm._v(" "), _vm._m(1), _vm._v(" "), _c("div", {
+  })])])]), _vm._v(" "), _vm._m(0), _vm._v(" "), _c("div", {
     staticClass: "ml-4"
   }, [_c("button", {
     staticClass: "flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0"
@@ -5638,117 +5702,10 @@ var render = function render() {
       "stroke-width": "2",
       d: "M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
     }
-  })])])])])])])])])]);
+  })])])])])])])])])]) : _vm._e();
 };
 
 var staticRenderFns = [function () {
-  var _vm = this,
-      _c = _vm._self._c;
-
-  return _c("div", {
-    staticClass: "chat-window__messages-inner"
-  }, [_c("div", {
-    staticClass: "chat-messages"
-  }, [_c("div", {
-    staticClass: "his-message"
-  }, [_c("div", {
-    staticClass: "inner"
-  }, [_c("div", {
-    staticClass: "profile"
-  }, [_c("img", {
-    staticClass: "w-10 h-10 rounded-full",
-    attrs: {
-      src: "https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144",
-      alt: ""
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "ballon-text"
-  }, [_c("div", [_vm._v("Hey How are you today?")])])])]), _vm._v(" "), _c("div", {
-    staticClass: "his-message"
-  }, [_c("div", {
-    staticClass: "inner"
-  }, [_c("div", {
-    staticClass: "profile"
-  }, [_c("img", {
-    staticClass: "w-10 h-10 rounded-full",
-    attrs: {
-      src: "https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144",
-      alt: ""
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "ballon-text"
-  }, [_c("div", [_vm._v("\n                                    Lorem ipsum dolor sit amet, consectetur\n                                    adipisicing elit. Vel ipsa commodi illum\n                                    saepe numquam maxime asperiores\n                                    voluptate sit, minima perspiciatis.\n                                ")])])])]), _vm._v(" "), _c("div", {
-    staticClass: "my-message"
-  }, [_c("div", {
-    staticClass: "inner"
-  }, [_c("div", {
-    staticClass: "profile"
-  }, [_c("img", {
-    staticClass: "w-10 h-10 rounded-full",
-    attrs: {
-      src: "https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144",
-      alt: ""
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "ballon-text"
-  }, [_c("div", [_vm._v("I'm ok what about you?")])])])]), _vm._v(" "), _c("div", {
-    staticClass: "my-message"
-  }, [_c("div", {
-    staticClass: "inner"
-  }, [_c("div", {
-    staticClass: "profile"
-  }, [_c("img", {
-    staticClass: "w-10 h-10 rounded-full",
-    attrs: {
-      src: "https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144",
-      alt: ""
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "ballon-text"
-  }, [_c("div", [_vm._v("\n                                    Lorem ipsum dolor sit, amet consectetur\n                                    adipisicing. ?\n                                ")])])])]), _vm._v(" "), _c("div", {
-    staticClass: "his-message"
-  }, [_c("div", {
-    staticClass: "inner"
-  }, [_c("div", {
-    staticClass: "profile"
-  }, [_c("img", {
-    staticClass: "w-10 h-10 rounded-full",
-    attrs: {
-      src: "https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144",
-      alt: ""
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "ballon-text"
-  }, [_c("div", [_vm._v("Lorem ipsum dolor sit amet !")])])])]), _vm._v(" "), _c("div", {
-    staticClass: "my-message"
-  }, [_c("div", {
-    staticClass: "inner"
-  }, [_c("div", {
-    staticClass: "profile"
-  }, [_c("img", {
-    staticClass: "w-10 h-10 rounded-full",
-    attrs: {
-      src: "https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144",
-      alt: ""
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "ballon-text"
-  }, [_c("div", [_vm._v("\n                                    Lorem ipsum dolor sit, amet consectetur\n                                    adipisicing. ?\n                                ")])])])]), _vm._v(" "), _c("div", {
-    staticClass: "his-message"
-  }, [_c("div", {
-    staticClass: "inner"
-  }, [_c("div", {
-    staticClass: "profile"
-  }, [_c("img", {
-    staticClass: "w-10 h-10 rounded-full",
-    attrs: {
-      src: "https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144",
-      alt: ""
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "ballon-text"
-  }, [_c("div", [_vm._v("\n                                    Lorem ipsum dolor sit amet consectetur\n                                    adipisicing elit. Perspiciatis, in.\n                                ")])])])])])]);
-}, function () {
   var _vm = this,
       _c = _vm._self._c;
 
@@ -5899,14 +5856,29 @@ var render = function render() {
     staticClass: "px-8 lg:py-4 lg:px-6"
   }, [_c("h3", {
     staticClass: "text-xl font-semibold tracking-wide mt-5 hidden lg:block"
-  }, [_vm._v("\n            Conversas\n        ")]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n            Usuários\n        ")]), _vm._v(" "), _c("div", {
     staticClass: "relative my-5 text-gray-600"
   }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.filter,
+      expression: "filter"
+    }],
     staticClass: "w-full bg-gray-100 h-10 px-5 pr-10 rounded-full text-sm focus:outline-none focus:shadow-lg focus:bg-white hover:shadow-md",
     attrs: {
       type: "search",
       name: "serch",
       placeholder: "Search"
+    },
+    domProps: {
+      value: _vm.filter
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.filter = $event.target.value;
+      }
     }
   }), _vm._v(" "), _c("button", {
     staticClass: "absolute right-0 top-0 mt-3 mr-4",
@@ -5936,13 +5908,16 @@ var render = function render() {
     }
   })])])])]), _vm._v(" "), _c("ul", {
     staticClass: "flex flex-col chat-list"
-  }, _vm._l(_vm.allUsers, function (user, index) {
+  }, _vm._l(_vm.users, function (user, index) {
     return _c("div", {
       key: index
     }, [_c("li", {
-      staticClass: "bg-white hover:bg-gray-100 border-b p-4 cursor-pointer",
-      "class": {
-        "is-active": _vm.activeChat === index
+      "class": ["hover:bg-gray-100", "border-b", "p-4", "cursor-pointer", _vm.activeChat === user.id ? "is-active" : "bg-white"],
+      on: {
+        click: function click($event) {
+          $event.preventDefault();
+          return _vm.openChatWithUser(user);
+        }
       }
     }, [_c("div", {
       staticClass: "flex items-center relative"
@@ -6060,6 +6035,84 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
 });
 
 __webpack_require__(/*! ./Echo */ "./resources/js/Echo.js");
+
+/***/ }),
+
+/***/ "./resources/js/vuex/modules/chat/index.js":
+/*!*************************************************!*\
+  !*** ./resources/js/vuex/modules/chat/index.js ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  state: {
+    userConversation: null,
+    messages: []
+  },
+  mutations: {
+    ADD_USER_CONVERSATION: function ADD_USER_CONVERSATION(state, user) {
+      state.userConversation = user;
+    },
+    REMOVE_USER_CONVERSATION: function REMOVE_USER_CONVERSATION(state, user) {
+      state.userConversation = null;
+    },
+    ADD_MESSAGES: function ADD_MESSAGES(state, messages) {
+      state.messages = messages;
+    },
+    ADD_MESSAGE: function ADD_MESSAGE(state, message) {
+      state.messages.push(message);
+    },
+    CLEAR_MESSAGES: function CLEAR_MESSAGES(state) {
+      state.messages = [];
+    }
+  },
+  actions: {
+    getMessagesConversation: function getMessagesConversation(_ref) {
+      var state = _ref.state,
+          commit = _ref.commit,
+          dispatch = _ref.dispatch;
+      commit("CLEAR_MESSAGES");
+      return axios.get("/larachat/public/api/v1/messages/".concat(state.userConversation.id)).then(function (response) {
+        commit("ADD_MESSAGES", response.data.data); // dispatch("markConversationsAsRead");
+      });
+    },
+    sendNewMessage: function sendNewMessage(_ref2, message) {
+      var state = _ref2.state,
+          commit = _ref2.commit;
+      return axios.post("/larachat/public/api/v1/messages", {
+        message: message,
+        receiver_id: state.userConversation.id
+      }).then(function (response) {
+        commit("ADD_MESSAGE", {
+          message: message,
+          receiver: _objectSpread({}, state.userConversation),
+          me: true
+        });
+      });
+    },
+    markConversationsAsRead: function markConversationsAsRead(_ref3) {
+      var commit = _ref3.commit,
+          state = _ref3.state;
+      return axios.patch("/larachat/public/api/v1/messages/mark_as_read", {
+        sender: state.userConversation.id
+      }).then(function (response) {
+        return commit("CLEAR_TOTAL_UNREAD_MESSAGES", state.userConversation.id);
+      });
+    }
+  },
+  getters: {}
+});
 
 /***/ }),
 
@@ -6210,16 +6263,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _modules_users__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/users */ "./resources/js/vuex/modules/users/index.js");
+/* harmony import */ var _modules_chat__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/chat */ "./resources/js/vuex/modules/chat/index.js");
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_2__["default"]);
-var store = new vuex__WEBPACK_IMPORTED_MODULE_2__["default"].Store({
+
+vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_3__["default"]);
+var store = new vuex__WEBPACK_IMPORTED_MODULE_3__["default"].Store({
   modules: {
-    users: _modules_users__WEBPACK_IMPORTED_MODULE_0__["default"]
+    users: _modules_users__WEBPACK_IMPORTED_MODULE_0__["default"],
+    chat: _modules_chat__WEBPACK_IMPORTED_MODULE_1__["default"]
   }
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (store);
