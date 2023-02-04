@@ -6,12 +6,24 @@ const userId = window.Laravel.user;
 window.Echo.channel(`larachat_database_private-chat.${userId}`).listen(
     "NewMessageCreated",
     (e) => {
-        let conversation = e.message
-        console.log(e.message);
-        Vue.$vToastify.success(
-            `Messagem: ${conversation.message}`,
-            `${conversation.sender.name} enviou uma nova mensagem`
-        );
+        let conversation = e.message;
+
+        if (
+            store.state.chat.userConversation == null ||
+            store.state.chat.userConversation.id != conversation.sender.id
+        ) {
+            // if (!store.state.me.me.preference.me_notify) {
+            //     return;
+            // }
+
+            Vue.$vToastify.success(
+                `Messagem: ${conversation.message}`,
+                `${conversation.sender.name} enviou uma nova mensagem`
+            );
+        } else {
+            conversation.me = false;
+            store.state.chat.messages.push(conversation);
+        }
     }
 );
 

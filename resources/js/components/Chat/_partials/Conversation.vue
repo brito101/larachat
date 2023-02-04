@@ -73,25 +73,31 @@
                 <!-- chat msgs  -->
                 <div class="chat-window__messages-inner" ref="messages">
                     <div class="chat-messages">
-                      <div
-                          v-for="(message, index) in messages"
-                          :key="index"
-                          :class="[message.me ? 'my-message' : 'his-message']">
-                        <div class="inner">
-                          <div class="profile" v-if="!message.me">
-                            <img
-                              :src="[message.sender.photo != '' ? message.sender.photo : 'images/avatar.png']"
-                              :alt="message.sender.name"
-                              class="w-10 h-10 rounded-full"
-                            />
-                          </div>
-                          <div class="ballon-text">
-                            <div>{{ message.message }}</div>
-                          </div>
+                        <div
+                            v-for="(message, index) in messages"
+                            :key="index"
+                            :class="[message.me ? 'my-message' : 'his-message']"
+                        >
+                            <div class="inner">
+                                <div class="profile" v-if="!message.me">
+                                    <img
+                                        :src="[
+                                            message.sender.photo != ''
+                                                ? message.sender.photo
+                                                : 'images/avatar.png',
+                                        ]"
+                                        :alt="message.sender.name"
+                                        class="w-10 h-10 rounded-full"
+                                    />
+                                </div>
+                                <div class="ballon-text">
+                                    <div>{{ message.message }}</div>
+                                </div>
+                            </div>
                         </div>
-                      </div>
-                    </div><!--chat-messages-->
-                  </div>
+                    </div>
+                    <!--chat-messages-->
+                </div>
                 <!-- footer send message -->
                 <div class="chat-input w-full px-4 mb-4">
                     <div
@@ -120,6 +126,8 @@
                         <div class="flex-grow ml-4">
                             <div class="relative w-full">
                                 <input
+                                    v-model="message"
+                                    v-on:keyup.enter="sendMessage"
                                     type="text"
                                     class="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
                                 />
@@ -127,9 +135,13 @@
                         </div>
                         <div class="ml-4">
                             <button
+                                :disabled="disabledButton"
+                                type="submit"
+                                @click.prevent="sendMessage"
                                 class="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0"
                             >
-                                <span>Enviar</span>
+                                <span v-if="sendingMessage">Enviando...</span>
+                                <span v-else>Enviar</span>
                                 <span class="ml-2">
                                     <svg
                                         class="w-4 h-4 transform rotate-45 -mt-px"
@@ -166,7 +178,54 @@ export default {
             me: (state) => state.me.me,
         }),
         disabledButton() {
-            return this.message.length < 2 || this.sendingMessage;
+            return this.message.length < 1 || this.sendingMessage;
+        },
+    },
+
+    data() {
+        return {
+            message: "",
+            sendingMessage: false,
+        };
+    },
+
+    methods: {
+        ...mapActions(["sendNewMessage", "setNewFavorite", "removeFavorite"]),
+        ...mapMutations({
+            removeUserChat: "REMOVE_USER_CONVERSATION",
+        }),
+        scrollMessages() {
+            setTimeout(() => {
+                this.$refs.messages.scroll({
+                    top: this.$refs.messages.scrollHeight,
+                    lef: 0,
+                    behavior: "smooth",
+                });
+            }, 10);
+        },
+
+        sendMessage() {
+            if (this.disabledButton) {
+                return;
+            }
+            this.sendingMessage = true;
+            this.sendNewMessage(this.message)
+                .then((response) => {
+                    this.message = "";
+                })
+                .finally(() => (this.sendingMessage = false));
+        },
+
+        toggleFavorite() {
+            if (this.userConversation.isMyFavorite)
+                return this.removeFavorite(this.userConversation);
+            return this.setNewFavorite(this.userConversation);
+        },
+    },
+
+    watch: {
+        messages() {
+            this.scrollMessages();
         },
     },
 };
