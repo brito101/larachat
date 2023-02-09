@@ -30963,11 +30963,11 @@ video {
     height: calc( 100vh - 150px);
   }
 
-  .has-oppened .chat-sidebar {
+  .has-opened .chat-sidebar {
     transform: translateX(-100vw);
   }
 
-  .has-oppened .chat-window {
+  .has-opened .chat-window {
     transform: translateX(0);
   }
 }

@@ -1,6 +1,5 @@
 <template>
-    <div>#profile</div>
-    <!-- <div
+    <div
         class="md:grid md:grid-cols-1 md:gap-6 p-8 overflow-y-auto"
         style="max-height: 100vh"
     >
@@ -142,54 +141,54 @@
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
 </template>
 
 <script>
-// import { mapState, mapActions } from "vuex";
+import { mapState, mapActions } from "vuex";
 export default {
-    // computed: {
-    //     ...mapState({
-    //         me: (state) => state.me.me,
-    //     }),
-    // },
-    // data() {
-    //     return {
-    //         isLogouting: false,
-    //     };
-    // },
-    // methods: {
-    //     ...mapActions([
-    //         "updatePhotoProfile",
-    //         "update",
-    //         "toogleNotify",
-    //         "updateImageChat",
-    //         "removeImageChat",
-    //         "logout",
-    //     ]),
-    //     updatePhoto(e) {
-    //         let files = e.target.files || e.dataTransfer.files;
-    //         if (files.length == 0) return;
-    //         const formData = new FormData();
-    //         formData.append("image", files[0]);
-    //         this.updatePhotoProfile(formData);
-    //     },
-    //     updateProfile() {
-    //         this.update({ name: this.me.name });
-    //     },
-    //     updateBackgroundChat(e) {
-    //         let files = e.target.files || e.dataTransfer.files;
-    //         if (files.length == 0) return;
-    //         const formData = new FormData();
-    //         formData.append("image", files[0]);
-    //         this.updateImageChat(formData);
-    //     },
-    //     logoutNow() {
-    //         this.isLogouting = true;
-    //         this.logout()
-    //             .then((response) => window.location.reload())
-    //             .finally(() => (this.isLogouting = false));
-    //     },
-    // },
+    computed: {
+        ...mapState({
+            me: (state) => state.me.me,
+        }),
+    },
+    data() {
+        return {
+            isLogouting: false,
+        };
+    },
+    methods: {
+        ...mapActions([
+            "updatePhotoProfile",
+            "update",
+            "toogleNotify",
+            "updateImageChat",
+            "removeImageChat",
+            "logout",
+        ]),
+        updatePhoto(e) {
+            let files = e.target.files || e.dataTransfer.files;
+            if (files.length == 0) return;
+            const formData = new FormData();
+            formData.append("image", files[0]);
+            this.updatePhotoProfile(formData);
+        },
+        updateProfile() {
+            this.update({ name: this.me.name });
+        },
+        updateBackgroundChat(e) {
+            let files = e.target.files || e.dataTransfer.files;
+            if (files.length == 0) return;
+            const formData = new FormData();
+            formData.append("image", files[0]);
+            this.updateImageChat(formData);
+        },
+        logoutNow() {
+            this.isLogouting = true;
+            this.logout()
+                .then((response) => window.location.reload())
+                .finally(() => (this.isLogouting = false));
+        },
+    },
 };
 </script>
