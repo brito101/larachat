@@ -81,7 +81,7 @@
                 <div class="col-span-6 sm:col-span-4 py-2">
                     <label for="notifications">
                         <input
-                            @change="toogleNotify"
+                            @change="toggleNotify"
                             v-model="me.preference.me_notify"
                             type="checkbox"
                             name="me_notify"
@@ -161,7 +161,7 @@ export default {
         ...mapActions([
             "updatePhotoProfile",
             "update",
-            "toogleNotify",
+            "toggleNotify",
             "updateImageChat",
             "removeImageChat",
             "logout",

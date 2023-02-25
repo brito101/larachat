@@ -5446,7 +5446,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return _this2.sendingMessage = false;
       });
     },
-    toogleFavorite: function toogleFavorite() {
+    toggleFavorite: function toggleFavorite() {
       if (this.userConversation.isMyFavorite) return this.removeFavorite(this.userConversation);
       return this.setNewFavorite(this.userConversation);
     }
@@ -5681,7 +5681,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       isLogouting: false
     };
   },
-  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(["updatePhotoProfile", "update", "toogleNotify", "updateImageChat", "removeImageChat", "logout"])), {}, {
+  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(["updatePhotoProfile", "update", "toggleNotify", "updateImageChat", "removeImageChat", "logout"])), {}, {
     updatePhoto: function updatePhoto(e) {
       var files = e.target.files || e.dataTransfer.files;
       if (files.length == 0) return;
@@ -5786,7 +5786,7 @@ var render = function render() {
     on: {
       click: function click($event) {
         $event.preventDefault();
-        return _vm.toogleFavorite.apply(null, arguments);
+        return _vm.toggleFavorite.apply(null, arguments);
       }
     }
   }, [_c("svg", {
@@ -5828,7 +5828,7 @@ var render = function render() {
     }, [_c("img", {
       staticClass: "w-10 h-10 rounded-full",
       attrs: {
-        src: [message.sender.photo != "" ? message.sender.photo : "/images/no-photo.png"],
+        src: [message.sender.photo != "" ? message.sender.photo : "images/avatar.png"],
         alt: message.sender.name
       }
     })]) : _vm._e(), _vm._v(" "), _c("div", {
@@ -6443,7 +6443,7 @@ var render = function render() {
         } else {
           _vm.$set(_vm.me.preference, "me_notify", $$c);
         }
-      }, _vm.toogleNotify]
+      }, _vm.toggleNotify]
     }
   }), _vm._v("\n                    Receber Notificações?\n                ")])])])]), _vm._v(" "), _c("div", {
     staticClass: "bg-white shadow sm:rounded-md sm:overflow-hidden"
@@ -6528,6 +6528,8 @@ window.Echo.channel("larachat_database_private-chat.".concat(userId)).listen("Ne
     conversation.me = false;
     _vuex_store__WEBPACK_IMPORTED_MODULE_0__["default"].state.chat.messages.push(conversation);
   }
+
+  _vuex_store__WEBPACK_IMPORTED_MODULE_0__["default"].commit('UPDATE_TOTAL_UNREAD_MESSAGES', conversation.sender.id);
 });
 window.Echo.join("larachat_database_chatroom").here(function (users) {
   console.log("Usuários online");
@@ -6694,7 +6696,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           dispatch = _ref.dispatch;
       commit("CLEAR_MESSAGES");
       return axios.get("/larachat/public/api/v1/messages/".concat(state.userConversation.id)).then(function (response) {
-        commit("ADD_MESSAGES", response.data.data); // dispatch("markConversationsAsRead");
+        commit("ADD_MESSAGES", response.data.data);
+        dispatch("markConversationsAsRead");
       });
     },
     sendNewMessage: function sendNewMessage(_ref2, message) {
@@ -6822,7 +6825,7 @@ var CONFIGS = {
         return dispatch("getMe");
       });
     },
-    toogleNotify: function toogleNotify(_ref7) {
+    toggleNotify: function toggleNotify(_ref7) {
       var dispatch = _ref7.dispatch,
           state = _ref7.state;
       return axios__WEBPACK_IMPORTED_MODULE_0___default().patch("/larachat/public/api/v1/profile/update-preference", {

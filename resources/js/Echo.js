@@ -24,6 +24,8 @@ window.Echo.channel(`larachat_database_private-chat.${userId}`).listen(
             conversation.me = false;
             store.state.chat.messages.push(conversation);
         }
+
+        store.commit('UPDATE_TOTAL_UNREAD_MESSAGES', conversation.sender.id)
     }
 );
 

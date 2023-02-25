@@ -88,7 +88,7 @@ export default {
                 .then((response) => dispatch("getMe"));
         },
 
-        toogleNotify({ dispatch, state }) {
+        toggleNotify({ dispatch, state }) {
             return axios.patch(
                 "/larachat/public/api/v1/profile/update-preference",
                 {

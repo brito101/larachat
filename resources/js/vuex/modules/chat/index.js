@@ -35,7 +35,7 @@ export default {
                 .then((response) => {
                     commit("ADD_MESSAGES", response.data.data);
 
-                    // dispatch("markConversationsAsRead");
+                    dispatch("markConversationsAsRead");
                 });
         },
 

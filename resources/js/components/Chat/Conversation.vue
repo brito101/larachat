@@ -51,7 +51,7 @@
                 <div class="flex items-center space-x-2">
                     <button
                         type="button"
-                        @click.prevent="toogleFavorite"
+                        @click.prevent="toggleFavorite"
                         class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none"
                     >
                         <svg
@@ -100,7 +100,7 @@
                                         :src="[
                                             message.sender.photo != ''
                                                 ? message.sender.photo
-                                                : '/images/no-photo.png',
+                                                : 'images/avatar.png',
                                         ]"
                                         :alt="message.sender.name"
                                         class="w-10 h-10 rounded-full"
@@ -226,7 +226,7 @@ export default {
                 })
                 .finally(() => (this.sendingMessage = false));
         },
-        toogleFavorite() {
+        toggleFavorite() {
             if (this.userConversation.isMyFavorite)
                 return this.removeFavorite(this.userConversation);
             return this.setNewFavorite(this.userConversation);
