@@ -6520,9 +6520,10 @@ window.Echo.channel("larachat_database_private-chat.".concat(userId)).listen("Ne
   var conversation = e.message;
 
   if (_vuex_store__WEBPACK_IMPORTED_MODULE_0__["default"].state.chat.userConversation == null || _vuex_store__WEBPACK_IMPORTED_MODULE_0__["default"].state.chat.userConversation.id != conversation.sender.id) {
-    // if (!store.state.me.me.preference.me_notify) {
-    //     return;
-    // }
+    if (!_vuex_store__WEBPACK_IMPORTED_MODULE_0__["default"].state.me.me.preference.me_notify) {
+      return;
+    }
+
     vue__WEBPACK_IMPORTED_MODULE_1__["default"].$vToastify.success("Messagem: ".concat(conversation.message), "".concat(conversation.sender.name, " enviou uma nova mensagem"));
   } else {
     conversation.me = false;
