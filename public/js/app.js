@@ -5678,7 +5678,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   })),
   data: function data() {
     return {
-      isLogouting: false
+      isLoggedOut: false
     };
   },
   methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(["updatePhotoProfile", "update", "toggleNotify", "updateImageChat", "removeImageChat", "logout"])), {}, {
@@ -5704,11 +5704,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     logoutNow: function logoutNow() {
       var _this = this;
 
-      this.isLogouting = true;
+      this.isLoggedOut = true;
       this.logout().then(function (response) {
         return window.location.reload();
       })["finally"](function () {
-        return _this.isLogouting = false;
+        return _this.isLoggedOut = false;
       });
     }
   })
@@ -6489,12 +6489,12 @@ var render = function render() {
   }, [_c("button", {
     staticClass: "w-full h-12 px-6 text-red-100 transition-colors duration-150 bg-red-700 rounded-lg focus:shadow-outline hover:bg-red-800",
     attrs: {
-      disabled: _vm.isLogouting
+      disabled: _vm.isLoggedOut
     },
     on: {
       click: _vm.logoutNow
     }
-  }, [_vm.isLogouting ? _c("span", [_vm._v("Saindo")]) : _c("span", [_vm._v("Sair")])])])])])]);
+  }, [_vm.isLoggedOut ? _c("span", [_vm._v("Saindo")]) : _c("span", [_vm._v("Sair")])])])])])]);
 };
 
 var staticRenderFns = [];
@@ -6576,6 +6576,7 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_3__["default"]({
   store: _vuex_store__WEBPACK_IMPORTED_MODULE_0__["default"],
   router: _routes__WEBPACK_IMPORTED_MODULE_2__["default"]
 });
+_vuex_store__WEBPACK_IMPORTED_MODULE_0__["default"].dispatch("getMe");
 
 /***/ }),
 
